@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,12 @@ import com.shab.artificon.repository.PrinterRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Transactional
 public class PrinterRepositoryTests {
-	
+
 	@Autowired
 	private PrinterRepository printerRepository;
 
-	
 	@Test
 	public void insertPrinter() {
 		Printer printer = new Printer();
@@ -35,7 +37,7 @@ public class PrinterRepositoryTests {
 		List<String> steps = new ArrayList<>();
 		steps.add("");
 		steps.add("");
-		
+
 		hp_OfficeJet_8600.setSteps(steps);
 
 		printer.getPrinterModels().add(hp_OfficeJet_8600);
