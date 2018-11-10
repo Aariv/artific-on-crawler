@@ -13,4 +13,5 @@ import com.shab.artificon.model.Printer;
  */
 public interface PrinterRepository extends CrudRepository<Printer, Integer> {
 
+	Printer findByName(String name);
 }
