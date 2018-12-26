@@ -4,34 +4,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.shab.artificon.model.Printer;
 import com.shab.artificon.model.PrinterModel;
+import com.shab.artificon.model.ProblemDto;
 import com.shab.artificon.repository.PrinterRepository;
+import com.shab.artificon.repository.ProblemRepository;
+import com.shab.artificon.utils.CSVReaderUtils;
 
 @SpringBootApplication
-public class ArtificOnCrawlerApplication implements CommandLineRunner {
+public class ArtificOnCrawlerApplication implements ApplicationRunner {
 
 	@Autowired
 	private PrinterRepository printerRepository;
-
+	
+	@Autowired
+	private ProblemRepository problemRepository;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(ArtificOnCrawlerApplication.class, args);
-	}
-
-	@Override
-	public void run(String... args) throws Exception {
-		Printer printer = new Printer();
-		printer.setName("HP");
-
-		printer.getPrinterModels().addAll(createHpPrinterModels(printer));
-
-		if(printerRepository.findByName(printer.getName()) == null) {
-			printerRepository.save(printer);
-		}
 	}
 
 	private List<PrinterModel> createHpPrinterModels(Printer printer) {
@@ -105,5 +101,20 @@ public class ArtificOnCrawlerApplication implements CommandLineRunner {
 		steps.add("Review this document for detailed technical data, such as model numbers");
 		steps.add("system requirements, print speeds, connectivity types,");
 		return steps;
+	}
+
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
+		// TODO Auto-generated method stub
+		for (String name : args.getOptionNames()){
+			System.out.println("arg-" + name + "=" + args.getOptionValues(name));
+			String filePath = args.getOptionValues(name).get(0);
+			if(filePath != null) {
+				System.out.println("File Path is " + filePath);
+				List<ProblemDto> problems = CSVReaderUtils.convertCsvToBean(filePath);
+				problemRepository.saveAll(problems);
+			}
+		}
+		
 	}
 }

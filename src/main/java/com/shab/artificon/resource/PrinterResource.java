@@ -17,6 +17,7 @@ import com.shab.artificon.model.Printer;
 import com.shab.artificon.model.PrinterModel;
 import com.shab.artificon.repository.PrinterModelRepository;
 import com.shab.artificon.repository.PrinterRepository;
+import com.shab.artificon.utils.ModelResponse;
 
 /**
  * @author zentere
@@ -49,6 +50,21 @@ public class PrinterResource {
 			return resultSet;
 		};
 		List<String> resultSet = models.apply(printerRepository.findByName(name).getPrinterModels());
+		
+		return resultSet;
+	}
+	
+	@GetMapping("printersByName/{name}")
+	public List<ModelResponse> onPrintersByName(@PathVariable String name) {
+		 
+		Function<List<PrinterModel>, List<ModelResponse>> models = (modelsFromDb) -> {
+			List<ModelResponse> resultSet = new ArrayList<ModelResponse>();
+			for (PrinterModel printerModel : modelsFromDb) {
+				resultSet.add(new ModelResponse(printerModel.getName()));
+			}
+			return resultSet;
+		};
+		List<ModelResponse> resultSet = models.apply(printerRepository.findByName(name).getPrinterModels());
 		
 		return resultSet;
 	}
